@@ -11,6 +11,7 @@ To run the bot :
    ```bash
 	ruby bot.rb
    ```
-*TO DO*
-    - Make better use of the probabilities
-    - Add functionality to look up form the Suffix Array when constructing a word
+__TO DO__
+    
+    1. Make better use of the probabilities
+    2. Add functionality to look up form the Suffix Array when constructing a word
