@@ -24,10 +24,10 @@ word_objects=words.collect do |word|
 end 
 word_objects.sort_by!{|word| word.score}.reverse!
 def mid_row(letter,word_objects)
-	word_objects.select{|word| word.middle_letter==letter}.first.word
+	word_objects.find{|word| word.middle_letter==letter}.word
 end 
 
-print mid_row("A",word_objects)
+print mid_row("T",word_objects)
 
 
 
