@@ -26,9 +26,13 @@ word_objects.sort_by!{|word| word.score}.reverse!
 def mid_row(letter,word_objects)
 	word_objects.find{|word| word.middle_letter==letter}.word
 end 
-
-print mid_row("T",word_objects)
-
-
+board=Array.new(7){[0]*7}
+letter=gets.strip
+board[3][3]=letter
+seed_word=mid_row(letter,word_objects)
+word_split=seed_word.split(//)
+board.each_with_index{|array,index| array[3]=word_split[index]}
+board.map!{|array| mid_row(array[3],word_objects).split(//)}
+board.each{|row| puts row.join " "}
 
 

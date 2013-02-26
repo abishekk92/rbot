@@ -13,5 +13,7 @@ To run the bot :
    ```
 __TO DO__
     
-    1. Make better use of the probabilities
-    2. Add functionality to look up form the Suffix Array when constructing a word
+   ~~ 1. Make better use of the probabilities ~~
+   ~~ 2. Add functionality to look up form the Suffix Array when constructing a word ~~
+      3. Get rid of Monkey Patching and refactor the code properly
+
