@@ -18,34 +18,22 @@ class Word
 end 
 
 
-words=IO.read("words.dat").split("\n").select{|i| i.strip.length == 7 or i.strip.length == 4 or i.strip.length == 3}
-word_objects=words.collect do |word|
-	_word=Word.new word.strip
-	_word.score=0.0
-	word.split(//).each{|letter| _word.score+=probability_table[letter].to_f}
-	_word
-end 
-word_objects.sort_by!{|word| word.score}.reverse!
-def mid_row(letter,word_objects)
-	word_objects.find{|word| word.middle_letter==letter}.word
-end 
-board=Array.new(7){[0]*7}
-letter=gets.strip
-board[3][3]=letter
-seed_word=mid_row(letter,word_objects)
-word_split=seed_word.split(//)
-board.each_with_index{|array,index| array[3]=word_split[index]}
-board.map!{|array| mid_row(array[3],word_objects).split(//)}
-board.each{|row| puts row.join " "}
-
 
 class Bot
-	attr_accessor :input,:my_board,:opponent_board,:current_position
+	attr_accessor :input,:board,:word_objects
 
   def initialize
 	@probability_table={}
-	@my_board=Array.new(7){Array.new(7)}
+	@board=Array.new(7){[0]*7}
 	#@opponent_board[3][3],@current_position=1,24
+	words=IO.read("words.dat").split("\n").select{|i| i.strip.length == 7 or i.strip.length == 4 or i.strip.length == 3}
+	@word_objects=words.collect do |word|
+		_word=Word.new word.strip
+		_word.score=0.0
+		word.split(//).each{|letter| _word.score+=probability_table[letter].to_f}
+		_word
+     	end 
+	word_objects.sort_by!{|word| word.score}.reverse!
   end
 
   def get_input
@@ -62,60 +50,60 @@ class Bot
 	STDOUT.flush
   end 
 
-  def update_board(letter,position,board)
-	board[position/7][position%7]=letter
+  def update_board(letter,position)
+	@board[position/7][position%7]=letter
   end
 
-  def fill_board
+  def mid_row(letter)
+	word_objects.find{|word| word.middle_letter==letter}.word
+  end 
+  
+  def pre_fill_board
+	letter=@input.split(" ")[1]
+	seed_word=mid_row(letter)
+	word_split=seed_word.split(//)
+	board.each_with_index{|array,index| array[3]=word_split[index]}
+	board.map!{|array| mid_row(array[3],word_objects).split(//)}
   end 
 
-  def calculate_letter(position)
-    #$alphabets.sample 
-	#sorted_list=filled_indexes.sort_by{|i| i[:count]}
-	 i,j=position/7,position%7
-	 sub_string=@my_board[i].join
-  def calculate_position
-	# i,j=@current_position/7,@current_position%7
-	# if  i==7 and j==7
-	 
-	# else
-	# 	i,j=i+1,j+1
-	# end 
-	position=$indexes.sample
-	$indexes.delete(position)
-	position
-  end
-
-  def print_probability_table
- 	
-	print @probability_table
+  def pick_letter
+    
+  
   end 
-  def self.print_alphabets
-	print $alphabets
+  
+  def pick_position(letter)
+  
   end
 
-end
+  
 end 
 bot=Bot.new
 input=bot.get_input
+ 
   def board_full(bot)
       bot.my_board.include? nil
   end 
-  def play(bot)
-        puts board_full(bot)
-	until board_full(bot)
-		position=bot.get_input
-		letter=bot.calculate_letter(position)
-		bot.update_board(letter,position,bot.my_board)
-		output_position=bot.calculate_position
-		bot.write_out(output_position)
-      end 
-  end 
-  if bot.is_first?
-	bot.update_board(input.split(" ")[1],24,bot.my_board)
-	position=bot.calculate_position
+
+  def play_offence(bot)
+ 	letter,position=bot.pick_letter
+	bot.write_out([letter,position].join " ")
+	opponent_position=bot.get_input
+	letter=bot.get_input.split(" ").first
+	position=bot.pick_position(letter)
 	bot.write_out(position)
-	play(bot)
+  end
+  
+  def play_defence(bot) 
+	  letter=bot.get_input.split(" ").first
+	  position=bot.pick_position(letter)
+	  bot.write_out(position)
+	  letter,position=bot.pick_letter
+	  bot.write_out([letter,position].join " ")
+	  opponent_position=bot.get_input
+  end 
+
+  if bot.is_first?
+	play_offence(bot) until board_full(bot)
   else 
-	play(bot)
-end
+  	play_defence(bot) until board_full(bot)
+  end 
